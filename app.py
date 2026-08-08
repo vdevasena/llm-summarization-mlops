@@ -159,12 +159,20 @@ if st.button(
             start_time = time.time()
 
             try:
-
-                summary = summarize(
+                result = summarize(
                     article,
                     prompt_version
                 )
 
+                summary = result["summary"]
+
+                input_tokens = result["input_tokens"]
+
+                output_tokens = result["output_tokens"]
+
+                total_tokens = result["total_tokens"]
+
+                estimated_cost = result["estimated_cost"]
                 latency = (
                     time.time()
                     - start_time
@@ -182,7 +190,7 @@ if st.button(
 
                 st.divider()
 
-                col1, col2 = st.columns(2)
+                col1, col2, col3 = st.columns(3)
 
                 with col1:
 
@@ -198,6 +206,44 @@ if st.button(
                         f"{latency:.2f} sec"
                     )
 
+                with col3:
+
+                    st.metric(
+                        "Estimated Cost",
+                        f"${estimated_cost:.6f}"
+                    )
+
+
+                st.subheader(
+                    "Token Usage"
+                )
+
+
+                col1, col2, col3 = st.columns(3)
+
+
+                with col1:
+
+                    st.metric(
+                        "Input Tokens",
+                        f"{input_tokens:,}"
+                    )
+
+
+                with col2:
+
+                    st.metric(
+                        "Output Tokens",
+                        f"{output_tokens:,}"
+                    )
+
+
+                with col3:
+
+                    st.metric(
+                        "Total Tokens",
+                        f"{total_tokens:,}"
+                    )
             except Exception as e:
 
                 st.error(
