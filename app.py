@@ -21,6 +21,7 @@ sys.path.insert(0, str(SRC_DIR))
 # =========================================================
 
 from summarizer import summarize
+from document_loader import extract_text
 
 
 # =========================================================
@@ -101,24 +102,38 @@ if input_method == "Paste text":
 else:
 
     uploaded_file = st.file_uploader(
-        "Upload a TXT file",
-        type=["txt"]
+        "Upload your document",
+        type=[
+            "txt",
+            "md",
+            "pdf",
+            "docx"
+        ]
     )
+
 
     if uploaded_file is not None:
 
-        article = (
-            uploaded_file
-            .read()
-            .decode("utf-8")
-        )
+        try:
 
-        st.text_area(
-            "Document preview:",
-            article,
-            height=300
-        )
+            file_bytes = uploaded_file.read()
 
+            article = extract_text(
+                uploaded_file.name,
+                file_bytes
+            )
+
+            st.text_area(
+                "Document preview:",
+                article,
+                height=300
+            )
+
+        except Exception as e:
+
+            st.error(
+                f"Could not read the document: {e}"
+            )
 
 # =========================================================
 # SUMMARIZE
