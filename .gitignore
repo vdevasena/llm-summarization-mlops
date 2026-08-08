@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Environment variables / API keys
+.env
+.env.*
+!.env.example
+
+# MLflow
+mlruns/
+mlflow.db
+mlflow.db-journal
+
+# Generated evaluation results
+data/evaluation/results_*.csv
+data/evaluation/judge_results_*.csv
+
+# Dataset cache
+data/raw/
+data/cache/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+
+# Logs
+*.log
+
+# Python packaging
+build/
+dist/
+*.egg-info/
