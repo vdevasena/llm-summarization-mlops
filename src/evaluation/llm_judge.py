@@ -71,7 +71,82 @@ def evaluate_summary(
         model="gpt-4.1-mini",
         input=prompt
     )
+# ---------------------------------------------------------
+# Get response text
+# ---------------------------------------------------------
 
-    text = response.output_text
+    text = response.output_text.strip()
 
-    return json.loads(text)
+    print("\nRAW JUDGE RESPONSE:")
+    print(text)
+
+
+    # ---------------------------------------------------------
+    # Remove markdown code fences if present
+    # ---------------------------------------------------------
+
+    if text.startswith("```"):
+
+        text = text.replace(
+            "```json",
+            ""
+        )
+
+        text = text.replace(
+            "```",
+            ""
+        )
+
+        text = text.strip()
+
+
+    # ---------------------------------------------------------
+    # Extract JSON object
+    # ---------------------------------------------------------
+
+    start = text.find("{")
+
+    end = text.rfind("}")
+
+
+    if start == -1 or end == -1:
+
+        raise ValueError(
+            "LLM Judge did not return valid JSON.\n"
+            f"Raw response:\n{text}"
+        )
+
+
+    json_text = text[
+        start:end + 1
+    ]
+
+
+    # ---------------------------------------------------------
+    # Parse JSON
+    # ---------------------------------------------------------
+
+    try:
+
+        result = json.loads(
+            json_text
+        )
+
+    except json.JSONDecodeError as e:
+
+        print(
+            "\nJSON parsing failed."
+        )
+
+        print(
+            "Raw response:"
+        )
+
+        print(
+            text
+        )
+
+        raise e
+
+
+    return result
